@@ -8,11 +8,12 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-asyncmy = "^0.2.9"
-fastapi = { extras = ["standard"], version = "^0.115.4" }
-greenlet = "^3.1.1"
-picologging = "^0.9.3"
-pydantic-settings = "^2.6.1"
+asyncmy = "^0.2"
+fastapi = { extras = ["standard"], version = "^0.115" }
+greenlet = "^3"
+picologging = "^0.9"
+pre-commit = "^4"
+pydantic-settings = "^2"
 sqlmodel = "^0.0.22"
 
 
