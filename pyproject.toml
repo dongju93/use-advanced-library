@@ -9,8 +9,10 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 asyncmy = "^0.2"
+black = "^24"
 fastapi = { extras = ["standard"], version = "^0.115" }
 greenlet = "^3"
+isort = "^5"
 picologging = "^0.9"
 pre-commit = "^4"
 pydantic-settings = "^2"
@@ -21,3 +23,14 @@ sqlmodel = "^0.0.22"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.black]
+target-version = ['py312']
+line-length = 79
+
+
+[tool.isort]
+profile = "black"
+line_length = 79
+atomic = true
