@@ -13,7 +13,6 @@ class MongoDB:
     def check_mongodb_connection(self) -> tuple[bool, str]:
         try:
             with self._mongo_conn as mongo_client:
-
                 mongo_client.admin.command("ping")
 
                 return True, "MongoDB 서버에 정상적으로 연결되었습니다."
@@ -64,7 +63,6 @@ class Motor:
     async def check_motor_connection(self) -> tuple[bool, str]:
         try:
             async with self._motor_conn() as motor_client:
-
                 await motor_client.admin.command("ping")
 
                 return True, "MongoDB 서버에 정상적으로 연결되었습니다."
