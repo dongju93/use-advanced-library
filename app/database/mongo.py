@@ -1,6 +1,8 @@
 import json
+from contextlib import asynccontextmanager
 from dataclasses import asdict
 
+from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, OperationFailure
 
@@ -56,3 +58,29 @@ class MongoDB:
     def _mongo_conn(self) -> MongoClient:
         uri = "mongodb://dongju:password@localhost:27017"
         return MongoClient(uri, serverSelectionTimeoutMS=5000)
+
+
+class Motor:
+    async def check_motor_connection(self) -> tuple[bool, str]:
+        try:
+            async with self._motor_conn() as motor_client:
+
+                await motor_client.admin.command("ping")
+
+                return True, "MongoDB 서버에 정상적으로 연결되었습니다."
+
+        except ConnectionFailure as e:
+            return False, f"MongoDB 서버 연결 실패: {str(e)}"
+        except OperationFailure as e:
+            return False, f"MongoDB 인증 실패: {str(e)}"
+        except Exception as e:
+            return False, f"예상치 못한 오류 발생: {str(e)}"
+
+    @asynccontextmanager
+    async def _motor_conn(self):
+        uri = "mongodb://dongju:password@localhost:27017/?compressors=zstd"
+        client = AsyncIOMotorClient(uri, serverSelectionTimeoutMS=5000)
+        try:
+            yield client
+        finally:
+            client.close()

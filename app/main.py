@@ -5,7 +5,7 @@ from fastapi import Body, FastAPI, Path, Query
 
 from .database.model.table import User
 from .database.model.types import MongoMoviesUpdate
-from .database.mongo import MongoDB
+from .database.mongo import MongoDB, Motor
 from .database.query import create_user_row, get_user_row
 from .logger import get_logger
 
@@ -70,3 +70,10 @@ async def mongo_data_update(
     mongo = MongoDB()
     modified_count = mongo.update_movie(doc_id, update_data)
     return {"modified_count": modified_count}
+
+
+@app.get("/motor/health")
+async def mongo_connection_is_up_motor():
+    logger.info("Checking MongoDB connection")
+    is_up, message = await Motor().check_motor_connection()
+    return {"is_up": is_up, "message": message}
