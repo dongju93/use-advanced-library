@@ -16,8 +16,8 @@ isort = "^5"
 picologging = "^0.9"
 pre-commit = "^4"
 pydantic-settings = "^2"
-pymongo = "^4"
 sqlmodel = "^0.0.22"
+motor = {extras = ["zstd"], version = "^3.6.0"}
 
 
 [build-system]
