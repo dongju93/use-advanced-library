@@ -213,3 +213,5 @@ pyrightconfig.json
 logs/
 app/.internal.toml
 poetry.lock
+uv.lock
+.python-version
