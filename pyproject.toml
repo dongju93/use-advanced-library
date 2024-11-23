@@ -1,36 +1,66 @@
-[tool.poetry]
+[project]
 name = "use-advanced-library"
 version = "0.1.0"
 description = ""
-authors = ["dongju93 <spdlqj011@gmail.com>"]
+authors = [{ name = "dongju93", email = "spdlqj011@gmail.com" }]
 readme = "README.md"
+requires-python = ">=3.12"
 
+dependencies = [
+    "asyncmy>=0.2",
+    "fastapi[standard]>=0.115",
+    "greenlet>=3",
+    "motor[zstd]>=3",
+    "picologging>=0.9",
+    "pre-commit>=4",
+    "pydantic-settings>=2",
+    "ruff>=0.8",
+    "sqlmodel>=0.0.22",
+]
 
-[tool.poetry.dependencies]
-python = "^3.12"
-asyncmy = "^0.2"
-black = "^24"
-fastapi = { extras = ["standard"], version = "^0.115" }
-greenlet = "^3"
-isort = "^5"
-picologging = "^0.9"
-pre-commit = "^4"
-pydantic-settings = "^2"
-sqlmodel = "^0.0.22"
-motor = {extras = ["zstd"], version = "^3.6.0"}
+[dependency-groups]
+dev = ["pytest>=8"]
 
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-
-[tool.black]
-target-version = ['py312']
+[tool.ruff]
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+    ".venv",
+]
 line-length = 79
+indent-width = 4
+target-version = "py312"
 
+[tool.ruff.lint]
+fixable = ["ALL"]
+unfixable = []
 
-[tool.isort]
-profile = "black"
-line_length = 79
-atomic = true
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
