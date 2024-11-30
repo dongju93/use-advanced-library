@@ -49,13 +49,13 @@ exclude = [
     "node_modules",
     "site-packages",
     "venv",
-    ".venv",
 ]
 line-length = 79
 indent-width = 4
 target-version = "py312"
 
 [tool.ruff.lint]
+select = ["E","F"]
 fixable = ["ALL"]
 unfixable = []
 
