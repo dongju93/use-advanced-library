@@ -1,6 +1,7 @@
 import json
 from contextlib import asynccontextmanager
 from dataclasses import asdict
+from typing import AsyncGenerator
 
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import MongoClient
@@ -75,7 +76,9 @@ class Motor:
             return False, f"예상치 못한 오류 발생: {str(e)}"
 
     @asynccontextmanager
-    async def _motor_conn(self):
+    async def _motor_conn(
+        self,
+    ) -> AsyncGenerator[AsyncIOMotorClient, None]:
         uri = "mongodb://dongju:password@localhost:27017/?compressors=zstd"
         client = AsyncIOMotorClient(uri, serverSelectionTimeoutMS=5000)
         try:
