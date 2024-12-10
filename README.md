@@ -12,6 +12,10 @@ Microsoft 에서 개발하는 로깅 라이브러리로 기본 내장 logging �
 아직 beta 임을 명시하고 있어 프로덕션에선 활용이 힘들다
 기본적인 기능 사용법이 loguru 대비 복잡한 편이며, 커스텀 로그 포멧도 제한된다
 향후 stable 버전 릴리즈 및 기능이 추가되면 점진적으로 적용해 볼만 하다
+### logfire
+pydacntic 프로젝트의 일환으로 Observability 전용 플랫폼이다
+Python 객체들(리스트, 딕셔너리, dataclass, Pydantic 모델 등)을 구조화된 데이터로 자동 변환해주어 데이터 분석이 용이하며, 표준 SQL을 사용한 쿼리가 가능해 기존 BI 도구들과 연동이 쉽다
+Pydantic을 활용하는 FastAPI 기반 프로젝트에 특히 적합하며 개발 단계에서 상세한 디버깅 정보가 필요한 프로젝트에 유용할 것 같다
 
 ## Settings
 ### pydantic-settings
