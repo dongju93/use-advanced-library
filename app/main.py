@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from typing import Annotated
 
 import uvloop
 from fastapi import Body, FastAPI, Path, Query
@@ -25,13 +26,13 @@ app = FastAPI(lifespan=lifespan)
 
 
 @app.post("/user")
-async def create_user(user: User = Body(...)):
+async def create_user(user: Annotated[User, Body(...)]):
     data = await create_user_row(user)
     return data
 
 
 @app.get("/user")
-async def get_user(user_idx: int = Query(...)):
+async def get_user(user_idx: Annotated[int, Query(...)]):
     logger.info(f"Getting user data with user_idx: {user_idx}")
     data = await get_user_row(user_idx)
     logger.info(f"Get user data complete with user_idx: {user_idx}")
@@ -55,7 +56,7 @@ async def mongo_data_insert():
 
 
 @app.get("/mongo/{doc_id}")
-async def mongo_data_search(doc_id: int = Path(...)):
+async def mongo_data_search(doc_id: Annotated[int, Path(...)]):
     logger.info(f"Searching data from MongoDB with doc_id: {doc_id}")
     mongo = MongoDB()
     data = mongo.search_movie_document(doc_id)
@@ -64,7 +65,8 @@ async def mongo_data_search(doc_id: int = Path(...)):
 
 @app.patch("/mongo/{doc_id}")
 async def mongo_data_update(
-    doc_id: int = Path(...), update_data: MongoMoviesUpdate = Body(...)
+    doc_id: Annotated[int, Path(...)],
+    update_data: Annotated[MongoMoviesUpdate, Body(...)],
 ):
     logger.info(f"Updating data from MongoDB with doc_id: {doc_id}")
     mongo = MongoDB()
