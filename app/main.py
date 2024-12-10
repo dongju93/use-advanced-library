@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 from typing import Annotated
 
+import logfire
 import uvloop
 from fastapi import Body, FastAPI, Path, Query
 
@@ -23,6 +24,33 @@ async def lifespan(_app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+
+logfire.configure()
+
+
+def request_attributes_mapper(request, attributes):
+    """Logfire에 전송될 요청 속성을 커스터마이즈합니다."""
+    mapped_attributes = {
+        "endpoint": request.url.path,
+        "method": request.method,
+    }
+
+    if attributes.get("errors"):
+        mapped_attributes["validation_errors"] = attributes["errors"]
+
+    if "values" in attributes:
+        # 민감한 정보를 제외하고 로깅
+        safe_values = {
+            k: v
+            for k, v in attributes["values"].items()
+            if k not in ["password"]
+        }
+        mapped_attributes["request_values"] = safe_values
+
+    return mapped_attributes
+
+
+logfire.instrument_fastapi(app)
 
 
 @app.post("/user")
@@ -60,6 +88,7 @@ async def mongo_data_search(doc_id: Annotated[int, Path(...)]):
     logger.info(f"Searching data from MongoDB with doc_id: {doc_id}")
     mongo = MongoDB()
     data = mongo.search_movie_document(doc_id)
+    logfire.info("Searched movie data: {data}!", data=data)
     return data
 
 
