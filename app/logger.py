@@ -1,10 +1,9 @@
 # logger.py
-from typing import Optional
 
 import picologging
 
 
-def get_logger(name: Optional[str] = None) -> picologging.Logger:
+def get_logger(name: str | None = None) -> picologging.Logger:
     """Get configured logger instance"""
     logger = picologging.getLogger(name or __name__)
 

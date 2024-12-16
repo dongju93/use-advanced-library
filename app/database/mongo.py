@@ -1,7 +1,7 @@
 import json
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from dataclasses import asdict
-from typing import AsyncGenerator
 
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import MongoClient
@@ -26,7 +26,7 @@ class MongoDB:
             return False, f"예상치 못한 오류 발생: {str(e)}"
 
     def insert_movie_document(self):
-        loaded_data = json.load(open("app/database/sample.json", "r"))
+        loaded_data = json.load(open("app/database/sample.json"))
         only_data_part = loaded_data["data"]["movies"]
 
         with self._mongo_conn as mongo_client:
