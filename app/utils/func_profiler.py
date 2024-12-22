@@ -54,10 +54,6 @@ def profile_performance(log_file: str = "logs/cprofiler.log"):
 
             return result
 
-        return (
-            async_wrapper
-            if asyncio.iscoroutinefunction(func)
-            else sync_wrapper
-        )
+        return async_wrapper if asyncio.iscoroutinefunction(func) else sync_wrapper
 
     return decorator

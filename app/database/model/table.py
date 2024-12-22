@@ -12,10 +12,6 @@ class User(SQLModel, table=True):
     user_id: str = Field(unique=True)
     password: str
     address: str
-    created_at: datetime = Field(
-        datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
-    )
-    updated_at: datetime = Field(
-        datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
-    )
+    created_at: datetime = Field(datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3])
+    updated_at: datetime = Field(datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3])
     suspend: bool = Field(default=False)

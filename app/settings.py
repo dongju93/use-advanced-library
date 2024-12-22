@@ -27,8 +27,4 @@ class Settings(BaseSettings):
         file_secret_settings: PydanticBaseSettingsSource,
     ) -> tuple[PydanticBaseSettingsSource, ...]:
         # TOML 설정 소스만 반환
-        return (
-            TomlConfigSettingsSource(
-                settings_cls, toml_file="app/.internal.toml"
-            ),
-        )
+        return (TomlConfigSettingsSource(settings_cls, toml_file="app/.internal.toml"),)
