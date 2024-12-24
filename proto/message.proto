@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package messageservice;
+
+// MessageService는 메시지를 처리하는 gRPC 서비스
+service MessageService {
+  // SendMessage는 단일 메시지를 처리합니다.
+  rpc SendMessage (MessageRequest) returns (MessageResponse) {}
+}
+
+// MessageRequest는 메시지를 요청하는 구조체
+message MessageRequest {
+  string message = 1; // 전송할 메시지
+}
+
+// MessageResponse는 메시지 처리 결과를 나타냄
+message MessageResponse {
+  enum Status {
+    UNKNOWN = 0;  // 기본 상태
+    SUCCESS = 1;  // 성공
+    FAILURE = 2;  // 실패
+  }
+  Status status = 1; // 처리 상태
+}
