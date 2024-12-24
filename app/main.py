@@ -1,9 +1,14 @@
 from contextlib import asynccontextmanager
 from typing import Annotated
 
+import grpc
 import logfire
 import uvloop
-from fastapi import Body, FastAPI, Path, Query
+from fastapi import Body, FastAPI, HTTPException, Path, Query
+from pydantic import BaseModel
+
+from proto import message_pb2 as message_proto_buffer
+from proto import message_pb2_grpc as message_proto_buffer_grpc
 
 from .database.model.table import User
 from .database.model.types import MongoMoviesUpdate
@@ -28,26 +33,26 @@ app = FastAPI(lifespan=lifespan)
 logfire.configure()
 
 
-def request_attributes_mapper(request, attributes):
-    """Logfire에 전송될 요청 속성을 커스터마이즈합니다."""
-    mapped_attributes = {
-        "endpoint": request.url.path,
-        "method": request.method,
-    }
+# def request_attributes_mapper(request, attributes):
+#     """Logfire에 전송될 요청 속성을 커스터마이즈합니다."""
+#     mapped_attributes = {
+#         "endpoint": request.url.path,
+#         "method": request.method,
+#     }
 
-    if attributes.get("errors"):
-        mapped_attributes["validation_errors"] = attributes["errors"]
+#     if attributes.get("errors"):
+#         mapped_attributes["validation_errors"] = attributes["errors"]
 
-    if "values" in attributes:
-        # 민감한 정보를 제외하고 로깅
-        safe_values = {
-            k: v
-            for k, v in attributes["values"].items()
-            if k not in ["password"]
-        }
-        mapped_attributes["request_values"] = safe_values
+#     if "values" in attributes:
+#         # 민감한 정보를 제외하고 로깅
+#         safe_values = {
+#             k: v
+#             for k, v in attributes["values"].items()
+#             if k not in ["password"]
+#         }
+#         mapped_attributes["request_values"] = safe_values
 
-    return mapped_attributes
+#     return mapped_attributes
 
 
 logfire.instrument_fastapi(app)
@@ -108,3 +113,29 @@ async def mongo_connection_is_up_motor():
     logger.info("Checking MongoDB connection")
     is_up, message = await Motor().check_motor_connection()
     return {"is_up": is_up, "message": message}
+
+
+class Message(BaseModel):
+    message: str
+
+
+@app.post("/grpc-send-test")
+async def send_message(message: Annotated[Message, Body(...)]) -> dict[str, str]:
+    try:
+        with grpc.insecure_channel("localhost:50051") as channel:
+            stub = message_proto_buffer_grpc.MessageServiceStub(channel)
+            response: message_proto_buffer.MessageResponse = stub.SendMessage(
+                message_proto_buffer.MessageRequest(message=message.message)
+            )
+
+            # proto 에서 구현된
+            status_map: dict[int, str] = {
+                message_proto_buffer.MessageResponse.Status.UNKNOWN: "알 수 없음",
+                message_proto_buffer.MessageResponse.Status.SUCCESS: "성공",
+                message_proto_buffer.MessageResponse.Status.FAILURE: "실패",
+            }
+
+            return {"status": status_map.get(response.status, "알 수 없음")}
+
+    except grpc.RpcError as e:
+        raise HTTPException(status_code=500, detail=f"gRPC 오류: {str(e)}") from e
