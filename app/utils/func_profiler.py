@@ -1,5 +1,6 @@
 import asyncio
 from cProfile import Profile
+from datetime import datetime
 from functools import wraps
 from io import StringIO
 from pathlib import Path
@@ -22,11 +23,13 @@ def profile_performance(log_file: str = "logs/cprofiler.log"):
             stats: Stats = (
                 Stats(profiler, stream=s).strip_dirs().sort_stats("cumulative")
             )
+            # 현재 시간과 함수명을 포함한 헤더 작성
+            header: str = f"\n=== Function Profiling: {func.__name__} at {datetime.now().isoformat()} ===\n"
             stats.print_stats(20)
 
             # 로그 파일에 기록
             with open(log_file, "a") as f:
-                f.write("\n=== Function Profiling Results ===\n")
+                f.write(header)
                 f.write(s.getvalue())
 
             return result
@@ -45,11 +48,13 @@ def profile_performance(log_file: str = "logs/cprofiler.log"):
             stats: Stats = (
                 Stats(profiler, stream=s).strip_dirs().sort_stats("cumulative")
             )
+            # 현재 시간과 함수명을 포함한 헤더 작성
+            header: str = f"\n=== Function Profiling: {func.__name__} at {datetime.now().isoformat()} ===\n"
             stats.print_stats(20)
 
             # 로그 파일에 기록
             with open(log_file, "a") as f:
-                f.write("\n=== Function Profiling Results ===\n")
+                f.write(header)
                 f.write(s.getvalue())
 
             return result
