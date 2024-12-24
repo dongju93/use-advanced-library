@@ -7,10 +7,13 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, OperationFailure
 
+from app.utils.func_profiler import profile_performance
+
 from .model.types import MongoMoviesUpdate
 
 
 class MongoDB:
+    @profile_performance()
     def check_mongodb_connection(self) -> tuple[bool, str]:
         try:
             with self._mongo_conn as mongo_client:
@@ -25,6 +28,7 @@ class MongoDB:
         except Exception as e:
             return False, f"예상치 못한 오류 발생: {str(e)}"
 
+    @profile_performance()
     def insert_movie_document(self):
         loaded_data = json.load(open("app/database/sample.json"))
         only_data_part = loaded_data["data"]["movies"]
@@ -36,6 +40,7 @@ class MongoDB:
             print(f"삽입된 문서 수: {len(result.inserted_ids)}")
             print("삽입된 문서 ID들:", result.inserted_ids)
 
+    @profile_performance()
     def search_movie_document(self, doc_id: int):
         with self._mongo_conn as mongo_client:
             db = mongo_client["moviedb"]
@@ -45,6 +50,7 @@ class MongoDB:
                 movie["_id"] = str(movie["_id"])
             return movie
 
+    @profile_performance()
     def update_movie(self, movie_id: int, update_data: MongoMoviesUpdate):
         with self._mongo_conn as mongo_client:
             db = mongo_client["moviedb"]
@@ -61,6 +67,7 @@ class MongoDB:
 
 
 class Motor:
+    @profile_performance()
     async def check_motor_connection(self) -> tuple[bool, str]:
         try:
             async with self._motor_conn() as motor_client:
@@ -75,6 +82,7 @@ class Motor:
         except Exception as e:
             return False, f"예상치 못한 오류 발생: {str(e)}"
 
+    @profile_performance()
     @asynccontextmanager
     async def _motor_conn(
         self,
